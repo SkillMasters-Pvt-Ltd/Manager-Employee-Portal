@@ -25,15 +25,27 @@
         headers: { "Content-Type": "application/json", "X-CSRFToken": csrf },
         body: JSON.stringify({ payload: payload }),
       });
-      const d = await r.json();
+      let d;
+      try {
+        d = await r.json();
+      } catch (e) {
+        show(false, "The server returned an unreadable response (HTTP " + r.status + "). Please refresh and try again.");
+        return;
+      }
+      if (!r.ok && !d.message) {
+        show(false, "Scan failed (HTTP " + r.status + "). Please refresh and try again.");
+        return;
+      }
       show(d.ok, d.message);
     } catch (e) {
-      show(false, "Network error. Please try again.");
+      show(false, "Could not contact the server. Check your connection and try again.");
+    } finally {
+      setTimeout(function () { busy = false; }, 3000);
     }
-    setTimeout(function () { busy = false; }, 3000);
   }
 
   function decode(imageData) {
+    if (typeof window.jsQR !== "function") return null;
     return jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
   }
 
@@ -50,6 +62,10 @@
   }
 
   startBtn.addEventListener("click", async function () {
+    if (typeof window.jsQR !== "function") {
+      show(false, "The QR scanner could not load. Refresh the page and try again.");
+      return;
+    }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       show(false, "Camera needs https or localhost. You can scan an image file instead.");
       return;
@@ -71,6 +87,11 @@
   fileInput.addEventListener("change", function () {
     const f = fileInput.files[0];
     if (!f) return;
+    if (typeof window.jsQR !== "function") {
+      show(false, "The QR scanner could not load. Refresh the page and try again.");
+      fileInput.value = "";
+      return;
+    }
     const img = new Image();
     img.onload = function () {
       canvas.width = img.width;
