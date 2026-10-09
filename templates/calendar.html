@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Calendar{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="filters">
+    <a class="btn ghost sm" href="?month={{ prev }}{% if choices %}&emp={{ emp.pk }}{% endif %}">&larr; Prev</a>
+    <h2 style="margin:0">{{ month_label }} - {{ emp.full_name }}</h2>
+    <a class="btn ghost sm" href="?month={{ next }}{% if choices %}&emp={{ emp.pk }}{% endif %}">Next &rarr;</a>
+    {% if choices %}
+    <form method="get" class="right"><label for="emp">Employee</label>
+      <select name="emp" id="emp" onchange="this.form.submit()">
+        {% for c in choices %}<option value="{{ c.pk }}" {% if c.pk == emp.pk %}selected{% endif %}>{{ c.employee_code }} - {{ c.full_name }}</option>{% endfor %}
+      </select></form>
+    {% endif %}
+  </div>
+  <table class="cal">
+    <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+    {% for week in weeks %}<tr>{% for c in week %}
+      <td class="{{ c.state }}{% if c.today %} today{% endif %}">{{ c.day }}</td>{% endfor %}</tr>{% endfor %}
+  </table>
+  <div class="legend">
+    <span class="tag in">Present {{ counts.present }}</span><span class="tag pending">Late {{ counts.late }}</span>
+    <span class="tag out">Leave {{ counts.leave }}</span><span class="tag rejected">Absent {{ counts.absent }}</span>
+  </div>
+</section>
+{% endblock %}

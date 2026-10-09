@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}{% if inst %}Edit employee{% else %}Add employee{% endif %}{% endblock %}
+{% block content %}
+<div class="card narrow" style="max-width:600px">
+  <h1>{% if inst %}Edit {{ inst.full_name }}{% else %}Add employee{% endif %}</h1>
+  <form method="post" class="stack">{% csrf_token %}{{ form.as_p }}
+    <button class="btn" type="submit">Save employee</button> <a class="btn ghost" href="{% url 'employees' %}">Cancel</a></form>
+</div>
+{% endblock %}

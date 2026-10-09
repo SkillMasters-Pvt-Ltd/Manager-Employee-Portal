@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Employees{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="filters"><h2 style="margin:0">Employees</h2><a class="btn right" href="{% url 'employee_new' %}">Add employee</a></div>
+  <div class="tablewrap"><table>
+    <tr><th>ID</th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th><th>Net salary</th><th></th></tr>
+    {% for e in rows %}
+    <tr><td>{{ e.employee_code }}</td><td>{{ e.full_name }}<br><span class="muted">{{ e.user.email }}</span></td><td>{{ e.designation }}</td><td>{{ e.department.name }}</td>
+      <td>{% if e.is_manager %}Manager{% else %}Employee{% endif %}</td>
+      <td>{% if e.salary_obj %}{{ e.salary_obj.net_salary|floatformat:2 }}{% else %}<span class="muted">Not set</span>{% endif %}</td>
+      <td><div class="row-actions"><a class="btn ghost sm" href="{% url 'employee_edit' e.pk %}">Edit</a>
+        <a class="btn ghost sm" href="{% url 'salary_edit' e.pk %}">Salary</a>
+        <a class="btn ghost sm" href="{% url 'id_card' e.pk %}">ID card</a></div></td></tr>
+    {% empty %}<tr><td colspan="7" class="muted">No employees yet. Add the first one.</td></tr>{% endfor %}
+  </table></div>
+</section>
+{% endblock %}

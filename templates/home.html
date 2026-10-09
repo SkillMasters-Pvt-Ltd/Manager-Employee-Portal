@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<section>
+  <p class="muted">Employee attendance platform</p>
+  <h1 class="big">One place for<br>every workday.</h1>
+  <p class="muted">Attendance, leave, salary, ID cards and employee records in one workspace.</p>
+  <div class="portals">
+    <a class="portal emp" href="{% url 'login' 'employee' %}"><strong>Employee portal</strong>
+      <span>Scan your card, view attendance, request leave, and see your private salary details.</span></a>
+    <a class="portal mgr" href="{% url 'login' 'manager' %}"><strong>Manager portal</strong>
+      <span>Manage your department's employees, attendance, leave approvals and reports.</span></a>
+  </div>
+  <p class="muted">Manager access is limited to the manager's assigned department.</p>
+</section>
+{% endblock %}

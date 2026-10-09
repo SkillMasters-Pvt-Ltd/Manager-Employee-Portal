@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Salary{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Salary for {{ emp.full_name }}</h1>
+  <p class="muted">Net salary = salary + incentives + allowances - deductions.</p>
+  <form method="post" class="stack">{% csrf_token %}{{ form.as_p }}
+    <button class="btn" type="submit">Save salary</button> <a class="btn ghost" href="{% url 'employees' %}">Cancel</a></form>
+</div>
+{% endblock %}

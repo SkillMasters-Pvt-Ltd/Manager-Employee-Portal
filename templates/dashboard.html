@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero">
+  <p>{% if is_mgr %}Manager workspace{% else %}Employee workspace{% endif %}</p>
+  <h1>Hello, {{ user.first_name|default:user.username }}.</h1>
+  <p>{% if me %}Scan your ID card to record attendance. Your attendance history is private to your account.{% else %}You are signed in as an administrator.{% endif %}</p>
+</section>
+
+{% if is_mgr %}
+<div class="grid4">
+  <div class="stat"><div class="n">{{ emp_count }}</div><div class="l">Employees</div></div>
+  <div class="stat"><div class="n">{{ present }}</div><div class="l">Present today</div></div>
+  <div class="stat"><div class="n">{{ late }}</div><div class="l">Late today</div></div>
+  <div class="stat"><div class="n">{{ pending }}</div><div class="l">Leave requests pending</div></div>
+</div>
+{% endif %}
+
+{% if me %}
+<div class="grid2">
+  <div class="stat"><div class="l">Your attendance records</div><div class="n">{{ record_count }}</div></div>
+  <div class="stat"><div class="l">Latest status</div><div class="n">{% if latest %}{{ latest.get_status_display }}{% else %}No scans yet{% endif %}</div></div>
+</div>
+{% if salary %}
+<section class="card">
+  <p class="muted">Private salary details</p>
+  <h2>Your compensation <span class="muted">(effective from {{ salary.effective_from|date:"M j, Y" }})</span></h2>
+  <div class="grid4">
+    <div><div class="l muted">Salary</div><strong>{{ salary.salary|floatformat:2 }}</strong></div>
+    <div><div class="l muted">Incentives</div><strong style="color:var(--green)">{{ salary.incentives|floatformat:2 }}</strong></div>
+    <div><div class="l muted">Allowances</div><strong style="color:var(--green)">{{ salary.allowances|floatformat:2 }}</strong></div>
+    <div><div class="l muted">Deductions</div><strong style="color:var(--red)">{{ salary.deductions|floatformat:2 }}</strong></div>
+    <div><div class="l muted">Net salary</div><strong>{{ salary.net_salary|floatformat:2 }}</strong></div>
+  </div>
+</section>
+{% endif %}
+{% endif %}
+
+<section class="card">
+  <h2>Recent records</h2>
+  <div class="tablewrap"><table>
+    <tr>{% if is_mgr %}<th>Employee</th>{% endif %}<th>Date</th><th>Time</th><th>Status</th><th>Late</th></tr>
+    {% for r in recent %}
+    <tr>{% if is_mgr %}<td>{{ r.employee.full_name }}</td>{% endif %}
+      <td>{{ r.date_time|date:"M j, Y" }}</td><td>{{ r.date_time|time:"h:i A" }}</td>
+      <td><span class="tag {{ r.status|lower }}">{{ r.get_status_display }}</span></td>
+      <td>{% if r.is_late %}<span class="tag late">Late</span>{% else %}-{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="5" class="muted">No attendance yet. Open Scan and scan an ID card.</td></tr>{% endfor %}
+  </table></div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}ID card{% endblock %}
+{% block content %}
+<div class="idcard">
+  <header>Attendly - Employee ID</header>
+  <div class="body">
+    <img src="{% url 'qr_image' emp.pk %}" alt="QR code for {{ emp.full_name }}">
+    <h2 style="margin:.6rem 0 0">{{ emp.full_name }}</h2>
+    <div>{{ emp.designation }}</div>
+    <div class="muted">{{ emp.department.name }} | {{ emp.employee_code }}</div>
+  </div>
+</div>
+<p style="text-align:center" class="noprint"><button class="btn" onclick="window.print()">Print ID card</button></p>
+{% endblock %}

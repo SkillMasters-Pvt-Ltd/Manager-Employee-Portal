@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Leave approvals{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Leave approvals</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Employee</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr>
+    {% for l in leaves %}
+    <tr><td>{{ l.employee.full_name }}</td><td>{{ l.start_date|date:"M j, Y" }}</td><td>{{ l.end_date|date:"M j, Y" }}</td><td>{{ l.days }}</td>
+      <td>{{ l.reason|truncatechars:60 }}</td><td><span class="tag {{ l.status|lower }}">{{ l.get_status_display }}</span></td>
+      <td>{% if l.status == 'PENDING' %}<div class="row-actions">
+        <form method="post" action="{% url 'leave_action' l.pk 'approve' %}">{% csrf_token %}<button class="btn sm" type="submit">Approve</button></form>
+        <form method="post" action="{% url 'leave_action' l.pk 'reject' %}">{% csrf_token %}<button class="btn red sm" type="submit">Reject</button></form>
+      </div>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="7" class="muted">No leave requests from your department yet.</td></tr>{% endfor %}
+  </table></div>
+</section>
+{% endblock %}

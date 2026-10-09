@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Attendance report</h2>
+  <form method="get" class="filters">
+    <div><label for="from">From</label><input type="date" id="from" name="from" value="{{ d_from|date:'Y-m-d' }}"></div>
+    <div><label for="to">To</label><input type="date" id="to" name="to" value="{{ d_to|date:'Y-m-d' }}"></div>
+    {% if employees %}
+    <div><label for="emp">Employee</label><select id="emp" name="emp"><option value="">All employees</option>
+      {% for e in employees %}<option value="{{ e.pk }}" {% if sel == e.pk|stringformat:"s" %}selected{% endif %}>{{ e.employee_code }} - {{ e.full_name }}</option>{% endfor %}
+    </select></div>{% endif %}
+    <button class="btn" type="submit">Apply</button>
+    <button class="btn ghost" type="submit" name="export" value="csv">Download CSV</button>
+  </form>
+  <p><span class="tag in">Days present {{ days_present }}</span> <span class="tag late">Late arrivals {{ late_count }}</span> <span class="muted">Showing up to 500 records.</span></p>
+  <div class="tablewrap"><table>
+    <tr><th>Employee ID</th><th>Name</th><th>Department</th><th>Date</th><th>Time</th><th>Status</th><th>Late</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.employee.employee_code }}</td><td>{{ r.employee.full_name }}</td><td>{{ r.employee.department.name }}</td>
+      <td>{{ r.date_time|date:"M j, Y" }}</td><td>{{ r.date_time|time:"h:i A" }}</td>
+      <td><span class="tag {{ r.status|lower }}">{{ r.get_status_display }}</span></td>
+      <td>{% if r.is_late %}<span class="tag late">Late</span>{% else %}-{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="7" class="muted">No records in this date range.</td></tr>{% endfor %}
+  </table></div>
+</section>
+{% endblock %}

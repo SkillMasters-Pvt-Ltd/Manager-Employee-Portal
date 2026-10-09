@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ role|title }} sign in{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>{{ role|title }} sign in</h1>
+  <p class="muted">Access your {% if role == 'manager' %}department's attendance, leave and reports{% else %}attendance, leave, salary and ID card{% endif %}.</p>
+  <form method="post" class="stack">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <p><label for="id_username">Username or email</label>{{ form.username }}{{ form.username.errors }}</p>
+    <p><label for="id_password">Password</label>{{ form.password }}{{ form.password.errors }}</p>
+    <button class="btn" type="submit">Sign in</button>
+    <a class="btn ghost" href="{% url 'home' %}">Back</a>
+  </form>
+</div>
+{% endblock %}

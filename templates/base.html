@@ -1,0 +1,32 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Attendly{% endblock %} | Employee Attendance Management Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{% url 'home' %}"><span class="logo">A</span>Attendly</a>
+  {% if user.is_authenticated %}
+  <nav>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'scan' %}">Scan</a>
+    <a href="{% url 'calendar' %}">Calendar</a>
+    <a href="{% url 'reports' %}">Reports</a>
+    {% if me %}<a href="{% url 'leave' %}">Leave</a><a href="{% url 'id_card' me.pk %}">My ID card</a>{% endif %}
+    {% if is_mgr %}<a href="{% url 'employees' %}">Employees</a><a href="{% url 'leave_review' %}">Approvals</a>{% endif %}
+  </nav>
+  <div class="who"><span>{{ user.get_full_name|default:user.username }}</span>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn ghost sm" type="submit">Log out</button></form>
+  </div>
+  {% endif %}
+</header>
+{% if messages %}<div class="msgs">{% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}</div>{% endif %}
+<main class="wrap">{% block content %}{% endblock %}</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>
